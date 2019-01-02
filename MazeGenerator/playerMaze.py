@@ -1,12 +1,15 @@
-from maze import *
+from . import maze
 import random
 import sys
+import csv
 
 from ast import literal_eval
 
+Direction = ["North", "East", "South", "West"]
+
 class playerMaze():
 	"""Stores the maze, player location, and what the player can view."""
-	def __init__(self, maze = Maze(0, 0), startLoc = (-1, -1)):
+	def __init__(self, maze = maze.Maze(0, 0), startLoc = (-1, -1)):
 		self.maze = maze
 		self.currLoc = startLoc # in the form (row, col)
 		self.visited = [startLoc] # Stores visited locations
@@ -91,13 +94,16 @@ class playerMaze():
 		'''Checks if the player can see or has seen the end. '''
 		# Check the adjacent locations to the end.
 		for direction in Direction:
-			adjacent = self.maze.getNeighborCell(self.maze.end[0], \
-								self.maze.end[1], direction)
-			# if the adjacent cell is the current location
-			# AND there is not wall in the way,
-			if adjacent == self.currLoc and \
-					not self.maze.hasWall(adjacent[0], adjacent[1], direction):
-				return True
+			# checks that there is not a wall in the way 
+			if not self.maze.hasWall(self.maze.end[0], \
+								self.maze.end[1], direction):
+
+				adjacent = self.maze.getNeighborCell(self.maze.end[0], \
+									self.maze.end[1], direction)
+				# if the adjacent cell is the current location
+				# AND there is not wall in the way,
+				if adjacent == self.currLoc:
+					return True
 		# Otherwise, 
 		return False
 

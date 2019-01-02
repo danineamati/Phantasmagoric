@@ -1,4 +1,4 @@
-from maze import *
+from maze import Maze
 import playerMaze
 import genmaze
 
@@ -24,7 +24,7 @@ def test(numRows, numCols, numPlayers, threshold, verbose = False):
 	if numRows == 10 and numCols == 15 and numPlayers == 2:
 		totalTests += 26
 
-	testMaze = genmaze.main(numRows, numCols, numPlayers, threshold,\
+	testMaze = genmaze.fullgenMaze(numRows, numCols, numPlayers, threshold,\
 	 verbose, verbose)
 
 	# We first checked that all the cells have been visited

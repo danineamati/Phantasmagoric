@@ -193,7 +193,9 @@ class Maze:
 		coinCount = int((self.numRows * self.numColumns) * percent)
 
 		# ensure that the coin count is possible
-		assert(coinCount < (self.numRows * self.numColumns) - len(self.start))
+		# otherwise, we will set it to full
+		if coinCount >= (self.numRows * self.numColumns) - len(self.start):
+			coinCount = (self.numRows * self.numColumns) - len(self.start) - 1
 
 		# find empty spaces for coins
 		while coinCount > 0:
@@ -204,9 +206,6 @@ class Maze:
 
 				coinCount -= 1
 				self.coin.append((r, c)) 
-
-		# place coins
-		# hide coins from player (in player maze)
 
 
 
