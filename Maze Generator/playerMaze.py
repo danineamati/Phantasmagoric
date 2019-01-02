@@ -9,6 +9,7 @@ class playerMaze():
 		self.currLoc = startLoc # in the form (row, col)
 		self.visited = [startLoc] # Stores visited locations
 		self.canViewEnd = self.checkViewEnd()
+		self.viewedCoins = []
 
 	def savePlayerMaze(self, fileName):
 		pass
@@ -26,6 +27,7 @@ class playerMaze():
 		self.visited.append(loc)
 		self.currLoc = loc
 		self.canViewEnd = self.checkViewEnd()
+		self.checkViewCoin()
 
 	def moveLocation(self, direction):
 		'''Moves to new location given ['North', 'East', 'South', 'West'] 
@@ -55,6 +57,25 @@ class playerMaze():
 				return True
 		# Otherwise, 
 		return False
+
+	def checkViewCoin(self):
+		'''Checks if the player has seen or can see coins in the maze. '''
+		for direction in Direction:
+			# checks that there is not a wall in the way 
+			if not self.maze.hasWall(self.currLoc[0], \
+								self.currLoc[1], direction):
+
+				# check locations around the player
+				adjacent = self.maze.getNeighborCell(self.currLoc[0], \
+									self.currLoc[1], direction)
+
+				# if the adjacent cell is a coin 
+				# AND there is not a wall in the way
+				if adjacent in self.maze.coin \
+					and adjacent not in self.viewedCoins:
+					self.viewedCoins.append(adjacent)
+
+		print(self.viewedCoins)
 
 	def print(self):
 		'''Outputs the maze using simple ASCII-art to the specified output.
@@ -110,6 +131,9 @@ class playerMaze():
 			for c in range(self.maze.numColumns):
 				if (r, c) == self.getCurrentLocation():
 					current_row += print_cell(' P ', r, c)
+
+				elif (r, c) in self.viewedCoins:
+					current_row += print_cell(' C ', r, c)
 
 				elif (r, c) in self.visited:
 					current_row += print_cell(' - ', r, c)

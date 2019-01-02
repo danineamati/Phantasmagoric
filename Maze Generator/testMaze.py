@@ -18,7 +18,8 @@ def printResult(text, numPassed, totalTests, truth):
 
 def test(numRows, numCols, numPlayers, threshold, verbose = False):
 	numPassed = 0
-	totalTests = 3 + numPlayers
+
+	totalTests = 7 + numPlayers
 
 	if numRows == 10 and numCols == 15 and numPlayers == 2:
 		totalTests += 18
@@ -54,6 +55,22 @@ def test(numRows, numCols, numPlayers, threshold, verbose = False):
 		if passed:
 			numPassed += 1
 		printResult("PLAYER START LOC SAVED", numPassed, totalTests, passed)
+
+	testPercents = [0, 0.05, 0.1, 0.5]
+
+	for percent in testPercents:
+		testMaze.coin = []
+
+		coinCount = int((numRows * numCols) * percent)
+
+		testMaze.setCoin(percent)
+		testMaze.print(False)
+
+		passed = (len(testMaze.coin) == coinCount)
+
+		if passed:
+			numPassed += 1 
+		printResult("ALL COINS ON MAZE", numPassed, totalTests, passed)
 		
 
 	# Test the saving feature
