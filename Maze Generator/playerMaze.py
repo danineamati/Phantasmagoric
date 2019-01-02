@@ -2,6 +2,8 @@ from maze import *
 import random
 import sys
 
+from ast import literal_eval
+
 class playerMaze():
 	"""Stores the maze, player location, and what the player can view."""
 	def __init__(self, maze, startLoc):
@@ -12,10 +14,45 @@ class playerMaze():
 		self.viewedCoins = []
 
 	def savePlayerMaze(self, fileName):
-		pass
+		'''Will save the crucial data of the maze so that it can be loaded
+		after the program has ended.
+
+		Filename is assumed to be a csv file. '''
+
+		with open(fileName, 'w', newline = '') as saveFile:
+			saveWriter = csv.writer(saveFile)
+			saveWriter.writerow(["Current Location", self.currLoc])
+			saveWriter.writerow(["Visited Locations", self.visited])
+			saveWriter.writerow(["Can view end", self.canViewEnd])	
+			saveWriter.writerow(["Viewed Coins", self.viewedCoins])
+
+		# Now save the maze
+		mazeFilename = fileName[:len(fileName) - 4] + "_maze" + ".csv"
+		self.maze.saveMaze(mazeFilename)
 
 	def loadPlayerMaze(self, fileName):
-		pass
+		'''Loads back saved data to recreate a maze.
+
+		Filename is assumed to be a csv file.'''
+		
+		with open(fileName) as saveFile:
+			saveReader = csv.reader(saveFile)
+
+			for index, row in enumerate(saveReader):
+				if index == 0:
+					self.currLoc = literal_eval(row[1])
+				elif index == 1:
+					self.visited = literal_eval(row[1])
+				elif index == 2:
+					self.canViewEnd = literal_eval(row[1])
+				elif index == 3:
+					self.viewedCoins = literal_eval(row[1])
+
+		mazeFilename = fileName[:len(fileName) - 4] + "_maze" + ".csv"
+		newmaze = Maze(0, 0)
+		self.newmaze.loadMaze(mazeFilename)
+
+		self.maze = newmaze
 
 	def getCurrentLocation(self):
 		'''Returns current location.'''

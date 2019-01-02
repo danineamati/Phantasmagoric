@@ -19,7 +19,7 @@ def printResult(text, numPassed, totalTests, truth):
 def test(numRows, numCols, numPlayers, threshold, verbose = False):
 	numPassed = 0
 
-	totalTests = 7 + numPlayers
+	totalTests = 8 + numPlayers
 
 	if numRows == 10 and numCols == 15 and numPlayers == 2:
 		totalTests += 18
@@ -64,7 +64,9 @@ def test(numRows, numCols, numPlayers, threshold, verbose = False):
 		coinCount = int((numRows * numCols) * percent)
 
 		testMaze.setCoin(percent)
-		testMaze.print(False)
+
+		if verbose:
+			testMaze.print(False)
 
 		passed = (len(testMaze.coin) == coinCount)
 
@@ -222,6 +224,8 @@ def test(numRows, numCols, numPlayers, threshold, verbose = False):
 		numPassed += 1
 	printResult("PLAYER ONE CHECK WEST", numPassed, totalTests, passed)
 
+	player1_Original = copy.deepcopy(p1)
+
 	moves = ["South", "West", "South", "South", "West", "South", "East", \
 				"East", "North", "North", "South", "South", "West", "West", \
 				"South", "South", "West", "North", "West", "West", "West", \
@@ -234,6 +238,12 @@ def test(numRows, numCols, numPlayers, threshold, verbose = False):
 
 	p1.print()
 	p2.print()
+
+	# Now we check that we can save and load player data
+	filename_p1 = "testP1SaveFile.csv"
+	p1.savePlayerMaze(filename_p1)
+
+
 
 if __name__ == '__main__':
 	numRows = 10
