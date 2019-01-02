@@ -55,7 +55,7 @@ def test(numRows, numCols, numPlayers, threshold, verbose = False):
 			numPassed += 1
 		printResult("PLAYER START LOC SAVED", numPassed, totalTests, passed)
 
-	testPercents = [0.5, 0.1, 0.05, 0]
+	testPercents = [0, 0.05, 0.1, 0.5]
 
 	for percent in testPercents:
 		testMaze.coin = []
