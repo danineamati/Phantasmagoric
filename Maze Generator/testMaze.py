@@ -8,23 +8,23 @@ import copy
 
 def printResult(text, numPassed, totalTests, truth):
 	'''Formats the print result.'''
-	text = text + (30 - len(text)) * ' '
+	text = text + (32 - len(text)) * ' '
 
 	if truth:
 		print(text + "PASSED {} / {}".format(numPassed, totalTests))
 	else:
-		print(text + "FAILED {} / {}".format(numPassed, totalTests))
+		print(text + "FAILED {} / {}".format(numPassed, totalTests), " * ")
 
 
 def test(numRows, numCols, numPlayers, threshold, verbose = False):
 	numPassed = 0
-	totalTests = 2 + numPlayers
+	totalTests = 3 + numPlayers
 
 	if numRows == 10 and numCols == 15 and numPlayers == 2:
 		totalTests += 18
 
 	testMaze = genmaze.main(numRows, numCols, numPlayers, threshold,\
-	 verbose, True)
+	 verbose, verbose)
 
 	# We first checked that all the cells have been visited
 	visitedPassed = True
@@ -55,6 +55,51 @@ def test(numRows, numCols, numPlayers, threshold, verbose = False):
 			numPassed += 1
 		printResult("PLAYER START LOC SAVED", numPassed, totalTests, passed)
 		
+
+	# Test the saving feature
+	# We first test inPlace loading
+	testSavedMaze = copy.deepcopy(testMaze)
+
+	filename = 'testSaveFile.csv'
+	testMaze.saveMaze(filename)
+	testMaze.loadMaze(filename)
+
+	passed = (testMaze.numRows == testSavedMaze.numRows) and \
+				(testMaze.numColumns == testSavedMaze.numColumns) and \
+				(testMaze.start == testSavedMaze.start) and \
+				(testMaze.end == testSavedMaze.end) and \
+				(testMaze.cells == testSavedMaze.cells) and \
+				(testMaze.cellNumToExit == testSavedMaze.cellNumToExit) and \
+				(testMaze.coin == testSavedMaze.coin)
+
+	if verbose:
+		testMaze.print()
+		testSavedMaze.print()
+	if passed:
+			numPassed += 1
+	printResult("MAZE SAVE AND LOAD INPLACE", numPassed, totalTests, passed)
+
+	# Now we test not inPlace loading
+	testMaze.saveMaze(filename)
+	newmaze = Maze(0, 0)
+	newmaze.loadMaze(filename)
+
+	passed = (newmaze.numRows == testSavedMaze.numRows) and \
+				(newmaze.numColumns == testSavedMaze.numColumns) and \
+				(newmaze.start == testSavedMaze.start) and \
+				(newmaze.end == testSavedMaze.end) and \
+				(newmaze.cells == testSavedMaze.cells) and \
+				(newmaze.cellNumToExit == testSavedMaze.cellNumToExit) and \
+				(newmaze.coin == testSavedMaze.coin)
+
+	if verbose:
+		newmaze.print()
+		testSavedMaze.print()
+	if passed:
+			numPassed += 1
+	printResult("MAZE SAVE AND LOAD NOT INPLACE", numPassed, totalTests, passed)
+
+
 	# Using the test case of 10 rows and 15 cols with seed 'TestSeed'
 	# with 2 players
 	if numRows == 10 and numCols == 15 and numPlayers == 2:
