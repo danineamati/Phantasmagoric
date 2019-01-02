@@ -27,7 +27,7 @@ class playerMaze():
 		self.visited.append(loc)
 		self.currLoc = loc
 		self.canViewEnd = self.checkViewEnd()
-		self.checkViewCoin()
+		self.checkViewCoin(False)
 
 	def moveLocation(self, direction):
 		'''Moves to new location given ['North', 'East', 'South', 'West'] 
@@ -58,7 +58,7 @@ class playerMaze():
 		# Otherwise, 
 		return False
 
-	def checkViewCoin(self):
+	def checkViewCoin(self, verbose = False):
 		'''Checks if the player has seen or can see coins in the maze. '''
 		for direction in Direction:
 			# checks that there is not a wall in the way 
@@ -75,7 +75,8 @@ class playerMaze():
 					and adjacent not in self.viewedCoins:
 					self.viewedCoins.append(adjacent)
 
-		print(self.viewedCoins)
+		if verbose:
+			print(self.viewedCoins)
 
 	def print(self):
 		'''Outputs the maze using simple ASCII-art to the specified output.
