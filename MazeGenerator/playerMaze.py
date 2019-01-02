@@ -6,11 +6,17 @@ from ast import literal_eval
 
 class playerMaze():
 	"""Stores the maze, player location, and what the player can view."""
-	def __init__(self, maze, startLoc):
+	def __init__(self, maze = Maze(0, 0), startLoc = (-1, -1)):
 		self.maze = maze
 		self.currLoc = startLoc # in the form (row, col)
 		self.visited = [startLoc] # Stores visited locations
-		self.canViewEnd = self.checkViewEnd()
+
+		sr, sc = startLoc
+		if sr <= 0 or sc <= 0:
+			self.canViewEnd = False
+		else:
+			self.canViewEnd = self.checkViewEnd()
+	
 		self.viewedCoins = []
 
 	def savePlayerMaze(self, fileName):
@@ -50,7 +56,7 @@ class playerMaze():
 
 		mazeFilename = fileName[:len(fileName) - 4] + "_maze" + ".csv"
 		newmaze = Maze(0, 0)
-		self.newmaze.loadMaze(mazeFilename)
+		newmaze.loadMaze(mazeFilename)
 
 		self.maze = newmaze
 

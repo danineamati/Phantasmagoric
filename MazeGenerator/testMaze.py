@@ -8,7 +8,7 @@ import copy
 
 def printResult(text, numPassed, totalTests, truth):
 	'''Formats the print result.'''
-	text = text + (32 - len(text)) * ' '
+	text = text + (50 - len(text)) * ' '
 
 	if truth:
 		print(text + "PASSED {} / {}".format(numPassed, totalTests))
@@ -22,7 +22,7 @@ def test(numRows, numCols, numPlayers, threshold, verbose = False):
 	totalTests = 8 + numPlayers
 
 	if numRows == 10 and numCols == 15 and numPlayers == 2:
-		totalTests += 18
+		totalTests += 26
 
 	testMaze = genmaze.main(numRows, numCols, numPlayers, threshold,\
 	 verbose, verbose)
@@ -79,7 +79,7 @@ def test(numRows, numCols, numPlayers, threshold, verbose = False):
 	# We first test inPlace loading
 	testSavedMaze = copy.deepcopy(testMaze)
 
-	filename = 'testSaveFile.csv'
+	filename = '../saveFiles/testSaveFile.csv'
 	testMaze.saveMaze(filename)
 	testMaze.loadMaze(filename)
 
@@ -224,7 +224,7 @@ def test(numRows, numCols, numPlayers, threshold, verbose = False):
 		numPassed += 1
 	printResult("PLAYER ONE CHECK WEST", numPassed, totalTests, passed)
 
-	player1_Original = copy.deepcopy(p1)
+	player1_Old = copy.deepcopy(p1)
 
 	moves = ["South", "West", "South", "South", "West", "South", "East", \
 				"East", "North", "North", "South", "South", "West", "West", \
@@ -236,12 +236,145 @@ def test(numRows, numCols, numPlayers, threshold, verbose = False):
 		else:
 			break
 
-	p1.print()
-	p2.print()
+	player1_Original = copy.deepcopy(p1)
 
 	# Now we check that we can save and load player data
-	filename_p1 = "testP1SaveFile.csv"
+	filename_p1 = "../saveFiles/testP1SaveFile.csv"
 	p1.savePlayerMaze(filename_p1)
+	p1.loadPlayerMaze(filename_p1)
+
+	passed = (p1.maze.numRows == player1_Original.maze.numRows) and \
+				(p1.maze.numColumns == player1_Original.maze.numColumns) and \
+				(p1.maze.start == player1_Original.maze.start) and \
+				(p1.maze.end == player1_Original.maze.end) and \
+				(p1.maze.cells == player1_Original.maze.cells) and \
+				(p1.maze.cellNumToExit == player1_Original.maze.cellNumToExit) \
+				and \
+				(p1.maze.coin == player1_Original.maze.coin)
+
+	if verbose:
+		p1.print()
+		player1_Original.print()
+	if passed:
+		numPassed += 1
+	printResult("PLAYER MAZE SAVE AND LOAD INPLACE", numPassed, \
+								totalTests, passed)
+
+	passed = (p1.currLoc == player1_Original.currLoc) and \
+				(p1.visited == player1_Original.visited) and \
+				(p1.canViewEnd == player1_Original.canViewEnd) and \
+				(p1.viewedCoins == player1_Original.viewedCoins)
+	if passed:
+		numPassed += 1
+	printResult("PLAYER SAVE AND LOAD INPLACE", numPassed, \
+								totalTests, passed)
+
+	# Now we test not inPlace loading
+	p1.savePlayerMaze(filename_p1)
+	p1_new = playerMaze.playerMaze()
+	p1_new.loadPlayerMaze(filename_p1)
+
+	passed = (p1.maze.numRows == p1_new.maze.numRows) and \
+				(p1.maze.numColumns == p1_new.maze.numColumns) and \
+				(p1.maze.start == p1_new.maze.start) and \
+				(p1.maze.end == p1_new.maze.end) and \
+				(p1.maze.cells == p1_new.maze.cells) and \
+				(p1.maze.cellNumToExit == p1_new.maze.cellNumToExit) \
+				and \
+				(p1.maze.coin == p1_new.maze.coin)
+
+	if verbose:
+		p1.print()
+		p1_new.print()
+	if passed:
+		numPassed += 1
+	printResult("PLAYER MAZE SAVE AND LOAD NOT INPLACE", numPassed, \
+								totalTests, passed)
+
+	passed = (p1.currLoc == p1_new.currLoc) and \
+				(p1.visited == p1_new.visited) and \
+				(p1.canViewEnd == p1_new.canViewEnd) and \
+				(p1.viewedCoins == p1_new.viewedCoins)
+	if passed:
+		numPassed += 1
+	printResult("PLAYER SAVE AND LOAD NOT INPLACE", numPassed, \
+								totalTests, passed)
+
+	# Now we test data recovery
+	filename_p1_old = "../saveFiles/testP1SaveFile_Old.csv"
+	player1_Old.savePlayerMaze(filename_p1_old)
+	p1_old = playerMaze.playerMaze()
+	p1_old.loadPlayerMaze(filename_p1_old)
+
+	passed = (player1_Old.maze.numRows == p1_old.maze.numRows) and \
+				(player1_Old.maze.numColumns == p1_old.maze.numColumns) and \
+				(player1_Old.maze.start == p1_old.maze.start) and \
+				(player1_Old.maze.end == p1_old.maze.end) and \
+				(player1_Old.maze.cells == p1_old.maze.cells) and \
+				(player1_Old.maze.cellNumToExit == p1_old.maze.cellNumToExit) \
+				and \
+				(player1_Old.maze.coin == p1_old.maze.coin)
+
+	if verbose:
+		player1_Old.print()
+		p1_old.print()
+	if passed:
+		numPassed += 1
+	printResult("PLAYER MAZE RECOVERY NOT INPLACE", numPassed, \
+								totalTests, passed)
+
+	passed = (player1_Old.currLoc == p1_old.currLoc) and \
+				(player1_Old.visited == p1_old.visited) and \
+				(player1_Old.canViewEnd == p1_old.canViewEnd) and \
+				(player1_Old.viewedCoins == p1_old.viewedCoins)
+	if passed:
+		numPassed += 1
+	printResult("PLAYER RECOVERY NOT INPLACE", numPassed, \
+								totalTests, passed)
+
+	# Lastly, we test that the other player can save
+	filename_p2 = "../saveFiles/testP2SaveFile.csv"
+	p2.savePlayerMaze(filename_p2)
+	p2_new = playerMaze.playerMaze()
+	p2_new.loadPlayerMaze(filename_p2)
+
+	passed = (p2.maze.numRows == p2_new.maze.numRows) and \
+				(p2.maze.numColumns == p2_new.maze.numColumns) and \
+				(p2.maze.start == p2_new.maze.start) and \
+				(p2.maze.end == p2_new.maze.end) and \
+				(p2.maze.cells == p2_new.maze.cells) and \
+				(p2.maze.cellNumToExit == p2_new.maze.cellNumToExit) \
+				and \
+				(p2.maze.coin == p2_new.maze.coin)
+
+	if verbose:
+		p2.print()
+		p2_new.print()
+	if passed:
+		numPassed += 1
+	printResult("PLAYER 2 MAZE SAVE AND LOAD NOT INPLACE", numPassed, \
+								totalTests, passed)
+
+	passed = (p2.currLoc == p2_new.currLoc) and \
+				(p2.visited == p2_new.visited) and \
+				(p2.canViewEnd == p2_new.canViewEnd) and \
+				(p2.viewedCoins == p2_new.viewedCoins)
+	if passed:
+		numPassed += 1
+	printResult("PLAYER 2 SAVE AND LOAD NOT INPLACE", numPassed, \
+								totalTests, passed)
+
+
+	p1.print()
+
+	if verbose:
+		p1_new.print()
+		p1_old.print()
+
+	p2.print()
+
+	if verbose:
+		p2_new.print()
 
 
 
