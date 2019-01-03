@@ -1,5 +1,6 @@
 import random
-
+import csv
+from ast import literal_eval
 
 MazeCell = ["Empty", "Wall", "Visited"]
 Direction = ["North", "East", "South", "West"]
@@ -14,14 +15,54 @@ class Maze:
 		self.clear()
 		self.start = []
 		self.coin = []
-		self.end = (random.randint(0, self.numRows - 1),\
-								random.randint(0, self.numColumns - 1))
+
+		if rows > 0 and columns > 0:
+			self.end = (random.randint(0, rows - 1), \
+									random.randint(0, columns - 1))
+		else:
+			self.end = (-1, -1)
 
 	def saveMaze(self, fileName):
-		pass
+		'''Will save the crucial data of the maze so that it can be loaded
+		after the program has ended.
+
+		Filename is assumed to be a csv file. '''
+
+		with open(fileName, 'w', newline = '') as saveFile:
+			saveWriter = csv.writer(saveFile)
+			saveWriter.writerow(["Row Number", self.numRows])
+			saveWriter.writerow(["Column Number", self.numColumns])
+			saveWriter.writerow(["End Location", self.end])
+			saveWriter.writerow(["Start Locations", self.start])	
+			saveWriter.writerow(["Coin Locations", self.coin])
+			saveWriter.writerow(["Cell Locations", self.cells])
+			saveWriter.writerow(["Cell Numbers", self.cellNumToExit])
+
 
 	def loadMaze(self, fileName):
-		pass
+		'''Loads back saved data to recreate a maze.
+
+		Filename is assumed to be a csv file.'''
+		
+		with open(fileName) as saveFile:
+			saveReader = csv.reader(saveFile)
+
+			for index, row in enumerate(saveReader):
+				if index == 0:
+					self.numRows = int(row[1])
+				elif index == 1:
+					self.numColumns = int(row[1])
+				elif index == 2:
+					self.end = literal_eval(row[1])
+				elif index == 3:
+					self.start = literal_eval(row[1])
+				elif index == 4:
+					self.coin = literal_eval(row[1])
+				elif index == 5:
+					self.cells = literal_eval(row[1])
+				elif index == 6:
+					self.cellNumToExit = literal_eval(row[1])
+
 
 	def getExpArrayIndex(self, cellRow, cellColumn):
 		'''Take 2D coordinates and compute the corresponding 1D array index.
@@ -152,7 +193,9 @@ class Maze:
 		coinCount = int((self.numRows * self.numColumns) * percent)
 
 		# ensure that the coin count is possible
-		assert(coinCount < (self.numRows * self.numColumns) - len(self.start))
+		# otherwise, we will set it to full
+		if coinCount >= (self.numRows * self.numColumns) - len(self.start):
+			coinCount = (self.numRows * self.numColumns) - len(self.start) - 1
 
 		# find empty spaces for coins
 		while coinCount > 0:
@@ -163,9 +206,6 @@ class Maze:
 
 				coinCount -= 1
 				self.coin.append((r, c)) 
-
-		# place coins
-		# hide coins from player (in player maze)
 
 
 

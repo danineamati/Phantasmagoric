@@ -1,65 +1,66 @@
-from maze import *
+from . import maze
 import random
 import sys
 import copy
 
-def addDirectionOption(Maze, row, column, direction, dir_list):
+def addDirectionOption(thisMaze, row, column, direction, dir_list):
 	''' Adds a direction to the list of possible directions'''
-	(neighbor_row, neighbor_col) = Maze.getNeighborCell(row, column, direction)
+	(neighbor_row, neighbor_col) = thisMaze.\
+									getNeighborCell(row, column, direction)
 
-	if not Maze.isVisited(neighbor_row, neighbor_col):
+	if not thisMaze.isVisited(neighbor_row, neighbor_col):
 		dir_list.append(direction)
 
-def numWalls(Maze, cellRow, cellCol):
+def numWalls(thisMaze, cellRow, cellCol):
 	''' Check has number of walls'''
 	wall_num = 0
 
-	if Maze.hasWall(cellRow, cellCol, "North"):
+	if thisMaze.hasWall(cellRow, cellCol, "North"):
 		wall_num += 1
-	if Maze.hasWall(cellRow, cellCol, "East"):
+	if thisMaze.hasWall(cellRow, cellCol, "East"):
 		wall_num += 1
-	if Maze.hasWall(cellRow, cellCol, "South"):
+	if thisMaze.hasWall(cellRow, cellCol, "South"):
 		wall_num += 1
-	if Maze.hasWall(cellRow, cellCol, "West"):
+	if thisMaze.hasWall(cellRow, cellCol, "West"):
 		wall_num += 1
 
 	return wall_num
 
-def findFurthestSharedCell(Maze, numShare):
+def findFurthestSharedCell(thisMaze, numShare):
 	'''We want to find the furthest cell from the exit that appears more than
 	once. '''
 	# We first want to sort the list to put the higher numbers (cells further
 	# from the exit) at the front of the list
-	cellNumList = sorted(Maze.cellNumToExit)[::-1]
+	cellNumList = sorted(thisMaze.cellNumToExit)[::-1]
 
 	for cell in cellNumList:
 		# If the cell is repeated, then we found our candidate
 		if cellNumList.count(cell) >= numShare:
 			return cell 
 	# If there is no candidate, then there is only one path in the entire
-	# maze. Notify the calling function.
+	# thisMaze. Notify the calling function.
 	return -1
 
-def findNumDirectionOptions(Maze, row, col):
-	'''Given a cell on the maze (described by a (row, col) coordinate), return
+def findNumDirectionOptions(thisMaze, row, col):
+	'''Given a cell on the thisMaze (described by a (row, col) coordinate), return
 	the number of options (North, South, East, West) that can be explored. '''
 	options = []
 			
 	# Check that there is room to the NORTH
 	if row > 0:
-		addDirectionOption(Maze, row, col, "North", options)
+		addDirectionOption(thisMaze, row, col, "North", options)
 
 	# Also check that there is room to the SOUTH
-	if row < Maze.numRows - 1:
-		addDirectionOption(Maze, row, col, "South", options)
+	if row < thisMaze.numRows - 1:
+		addDirectionOption(thisMaze, row, col, "South", options)
 
 	# Also check that there is room to the WEST
 	if col > 0:
-		addDirectionOption(Maze, row, col, "West", options)
+		addDirectionOption(thisMaze, row, col, "West", options)
 
 	# Lastly, check that there is room to the EAST
-	if col < Maze.numColumns - 1:
-		addDirectionOption(Maze, row, col, "East", options)
+	if col < thisMaze.numColumns - 1:
+		addDirectionOption(thisMaze, row, col, "East", options)
 
 	# Now options should only a max of 4 options. These will exclude
 	# walls and locations that have already been visited.
@@ -79,7 +80,7 @@ def findAllIndices(inList, val):
 
 	return indexList
 
-def findNewHead(Maze, inList, verbose = False):
+def findNewHead(thisMaze, inList, verbose = False):
 	'''Takes in a list of the form [(row, col), ...] and finds the first list
 	wear the numOptions is greater than zero.'''
 	if inList == [] and verbose:
@@ -87,7 +88,7 @@ def findNewHead(Maze, inList, verbose = False):
 
 	for index, coord in enumerate(inList):
 		r, c = coord
-		numOptions = len(findNumDirectionOptions(Maze, r, c))
+		numOptions = len(findNumDirectionOptions(thisMaze, r, c))
 		if numOptions > 0:
 			# We have found a new head
 			if verbose:
@@ -100,8 +101,8 @@ def findNewHead(Maze, inList, verbose = False):
 
 	return []
 
-def findNewPath(Maze, availList, verbose = False):
-	'''Given the state of the maze and explored paths. It finds a new path if
+def findNewPath(thisMaze, availList, verbose = False):
+	'''Given the state of the thisMaze and explored paths. It finds a new path if
 	possible.'''
 	# In the new generator, we want to restart at the end and find
 	# the earliest location that had options.
@@ -114,7 +115,7 @@ def findNewPath(Maze, availList, verbose = False):
 
 	for possPath in iterList:
 		oldPath = copy.deepcopy(possPath)
-		newPath = findNewHead(Maze, possPath, verbose)	
+		newPath = findNewHead(thisMaze, possPath, verbose)	
 
 		if newPath != []:
 			availList.append(newPath)
@@ -132,7 +133,7 @@ def findNewPath(Maze, availList, verbose = False):
 
 def genMaze(numRows, numCols, threshold, verbose = False):
 	''' This function generates the maze'''
-	m = Maze(numRows, numCols)
+	m = maze.Maze(numRows, numCols)
 	m.clear()
 	m.setAllWalls()
 	m.setVisited(m.end[0], m.end[1])
@@ -209,8 +210,8 @@ def genMaze(numRows, numCols, threshold, verbose = False):
 		
 		
 
-def main(numRows, numCols, numPlayers, threshold, coinPercent, verbose = False,\
-			printMaze = True):
+def fullgenMaze(numRows, numCols, numPlayers, threshold, coinPercent, \
+			verbose = False, printMaze = True):
 	'''Wraps together all maze generation functions. '''
 
 	# We first want to generate the maze
