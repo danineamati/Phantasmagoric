@@ -5,7 +5,8 @@ import copy
 
 def addDirectionOption(thisMaze, row, column, direction, dir_list):
 	''' Adds a direction to the list of possible directions'''
-	(neighbor_row, neighbor_col) = thisMaze.getNeighborCell(row, column, direction)
+	(neighbor_row, neighbor_col) = thisMaze.\
+									getNeighborCell(row, column, direction)
 
 	if not thisMaze.isVisited(neighbor_row, neighbor_col):
 		dir_list.append(direction)

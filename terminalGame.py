@@ -18,8 +18,8 @@ def startNewGame():
 
 	# First we select the map size:
 	sizeList = ['small', 'medium', 'big']
-	if len(sys.argv) > 1:
-		size = sys.argv[1]
+	if len(sys.argv) > 2:
+		size = sys.argv[2]
 
 	while size.lower() not in sizeList:
 		size = input("How big of a map? [small / medium / big] ")
@@ -37,8 +37,8 @@ def startNewGame():
 		numCols = 25
 			
 	# Second we determine the number of players
-	if len(sys.argv) > 2:
-		numPlayers = int(sys.argv[2])
+	if len(sys.argv) > 3:
+		numPlayers = int(sys.argv[3])
 
 	while numPlayers <= 0:
 		try:
@@ -51,8 +51,8 @@ def startNewGame():
 
 	# Third we determine the percentage of the board that will be filled with
 	# coins
-	if len(sys.argv) > 3:
-		coinPercent = float(sys.argv[3])
+	if len(sys.argv) > 4:
+		coinPercent = float(sys.argv[4])
 
 	while coinPercent < 0 or coinPercent >= 1:
 		try:
@@ -107,10 +107,10 @@ def startNewGame():
 	playGame = input("Would you like to play? [y/n]: ")
 
 	if playGame == 'y':
-		playExistingGame()
+		playExistingGame(False)
 
 
-def playExistingGame():
+def playExistingGame(sysValid = True):
 	'''Loads up an existing game.'''
 	print("Loading an Existing Game")
 	fileFound = False
@@ -118,8 +118,12 @@ def playExistingGame():
 	# While loops that asks for user to input username and if the name matchs
 	# with a file that is in saveFiles, the desired maze is displayed
 	while fileFound == False:
-		mazename = input("What is the name of the maze: ")
-		username = input("What is your username: ")
+		if sysValid and len(sys.argv) > 2:
+			mazename = sys.argv[2]
+			username = sys.argv[3]
+		else:
+			mazename = input("What is the name of the maze: ")
+			username = input("What is your username: ")
 
 		if username.lower() == "q":
 			quit()
@@ -134,6 +138,7 @@ def playExistingGame():
 
 		except FileNotFoundError as e:
 			print("File {} not found. Please try again.".format(filename))
+			sysValid = False
 
 	playMaze.print()
 
@@ -161,10 +166,13 @@ def playExistingGame():
 		moveChoice = input("Where would you like to move? " +\
 			"[North/South/East/West/Cancel]: ")
 
+		Direction = ["North", "East", "South", "West"]
+
+		if moveChoice in ["n", "e", "s", "w"]:
+			moveChoice = Direction[["n", "e", "s", "w"].index(moveChoice)]
+
 		if (moveChoice == "North" or moveChoice == "South" \
-			or moveChoice == "East" or moveChoice == "West" or \
-			moveChoice.lower() == "n" or moveChoice.lower() == "s" \
-			or moveChoice.lower() == "e" or moveChoice.lower() == "w") and \
+			or moveChoice == "East" or moveChoice == "West") and \
 			playMaze.checkMove(moveChoice):
 
 				playMaze.moveLocation(moveChoice)
@@ -175,8 +183,8 @@ def playExistingGame():
 					turnSave = input("Do you want to save this turn? [y/n]: ")
 
 					if turnSave == "y":
-						playMaze.savePlayerMaze(filename)
 						print("Current score: " + str(playMaze.score))
+						playMaze.savePlayerMaze(filename)
 						turn = False
 
 					elif turnSave == "n":
@@ -199,10 +207,14 @@ def runGame():
 	'''Runs the game.'''
 	newGame = ''
 
+
 	while newGame.lower() not in ['y', 'n']:
 		print("Welcome to Phantasmagoric!")
 		print("")
-		newGame = input("Do you want to start a new game? [y/n]: ")
+		if len(sys.argv) > 1:
+			newGame = sys.argv[1]
+		else:
+			newGame = input("Do you want to start a new game? [y/n]: ")
 
 		if newGame.lower() == 'y':
 			startNewGame()
@@ -210,6 +222,8 @@ def runGame():
 			playExistingGame()
 		else:
 			print("Try again.")
+			if len(sys.argv) > 1:
+				quit()
 
 
 if __name__ == '__main__':

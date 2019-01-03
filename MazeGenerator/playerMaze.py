@@ -42,10 +42,12 @@ class playerMaze():
 			saveWriter.writerow(["Other Usernames:", self.otherPlayerUsernames])
 			saveWriter.writerow(["Can view end", self.canViewEnd])	
 			saveWriter.writerow(["Viewed Coins", self.viewedCoins])
+			saveWriter.writerow(["Score", self.score])
 
 		# Now save the maze
 		if saveThisMaze:
-			mazeFilename = 'maze_' + playerFileName.split('_')[1] + '.csv'
+			mazeFilename = playerFileName.split('_')[0] + '_' +\
+								playerFileName.split('_')[1] + '.csv'
 			self.maze.saveMaze(mazeFilename)
 
 	def loadPlayerMaze(self, playerFileName):
@@ -67,8 +69,12 @@ class playerMaze():
 					self.canViewEnd = literal_eval(row[1])
 				elif index == 4:
 					self.viewedCoins = literal_eval(row[1])
+				elif index == 5:
+					self.score = int(row[1])
+					# print("Loading Score: ", int(row[1]), self.score)
 
-		mazeFilename = 'maze_' + playerFileName.split('_')[1] + '.csv'
+		mazeFilename = playerFileName.split('_')[0] + '_' +\
+								playerFileName.split('_')[1] + '.csv'
 
 		newmaze = maze.Maze(0, 0)
 		newmaze.loadMaze(mazeFilename)
@@ -167,7 +173,8 @@ class playerMaze():
 		 '''
 
 		print()
-		print(self.maze.numRows, self.maze.numColumns)
+		# print(self.maze.numRows, self.maze.numColumns)
+		print("Current score: " + str(self.score))
 
 		top_wall = '+'
 		for c in range(self.maze.numColumns):
