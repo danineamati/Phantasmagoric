@@ -11,6 +11,7 @@ def startNewGame():
 	'''Starts a new game.'''
 	print("Starting a New Game")
 
+	# Initializing quantities that will be needed later.
 	size = ''
 	numPlayers = 0
 	coinPercent = -1
@@ -35,7 +36,7 @@ def startNewGame():
 		numRows = 20
 		numCols = 25
 			
-
+	# Second we determine the number of players
 	if len(sys.argv) > 2:
 		numPlayers = int(sys.argv[2])
 
@@ -48,6 +49,8 @@ def startNewGame():
 		if numPlayers <= 0:
 			print("Try Again")
 
+	# Third we determine the percentage of the board that will be filled with
+	# coins
 	if len(sys.argv) > 3:
 		coinPercent = float(sys.argv[3])
 
@@ -60,8 +63,14 @@ def startNewGame():
 			coinPercent = 0
 		if coinPercent < 0 or coinPercent >= 1:
 			print("Try Again")
-		
+	
+	# For now we keep the branching threshold at 10, which works for all map
+	# sizes. 
 	threshold = 10
+
+	# Display to user that the map/maze is being generated. 
+	# It is also useful so that the user knows that the parameters have been
+	# inputted correctly
 	print(\
 '''\nGenerating map with properties:
 	{}: {} x {}
@@ -70,9 +79,13 @@ def startNewGame():
 	{} Branching Threshold'''.\
 	format(size, numRows, numCols, numPlayers, coinPercent * 100, threshold))
 
+	# Here we generate the maze
 	maze = fullgenMaze(numRows, numCols, numPlayers, threshold, coinPercent, \
 		False, False)
 
+	# In order to save the maze data, etc. The user needs to input the username
+	# of the players.
+	# In the current implementation, the user specifies all of the usernames.
 	print("\nTime to create characters")
 
 	for player in range(numPlayers):
@@ -84,7 +97,13 @@ def startNewGame():
 		playerObj.savePlayerMaze(filename)
 
 
+	# The map has been generated and the game is ready!
+	print()
+	print("The game is ready!")
+	playGame = input("Would you like to play? [y/n]: ")
 
+	if playGame == 'y':
+		playExistingGame()
 
 
 def playExistingGame():
