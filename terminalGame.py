@@ -169,6 +169,7 @@ def playExistingGame():
 
 					if turnSave == "y":
 						playMaze.savePlayerMaze(filename)
+						print("Current score: " + str(playMaze.score))
 						turn = False
 
 					elif turnSave == "n":

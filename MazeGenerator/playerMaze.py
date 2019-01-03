@@ -15,6 +15,7 @@ class playerMaze():
 		self.visited = [startLoc] # Stores visited locations
 
 		self.viewedCoins = []
+		self.score = 0
 
 		sr, sc = startLoc
 		if sr <= 0 or sc <= 0:
@@ -78,6 +79,12 @@ class playerMaze():
 		self.currLoc = loc
 		self.canViewEnd = self.checkViewEnd()
 		self.checkViewCoin(False)
+
+		if (loc[0], loc[1]) in self.maze.coin:
+			self.maze.coin.remove(loc)
+			self.viewedCoins.remove(loc)
+
+			self.score += 1
 
 	def moveLocation(self, direction):
 		'''Moves to new location given ['North', 'East', 'South', 'West'] 
