@@ -1,6 +1,6 @@
-Current Location,"(5, 3)"
-Visited Locations,"[(0, 3), (1, 3), (0, 3), (0, 2), (0, 1), (0, 0), (1, 0), (2, 0), (2, 1), (3, 1), (4, 1), (4, 2), (4, 3), (5, 3)]"
+Current Location,"(6, 3)"
+Visited Locations,"[(0, 3), (1, 3), (0, 3), (0, 2), (0, 1), (0, 0), (1, 0), (2, 0), (2, 1), (3, 1), (4, 1), (4, 2), (4, 3), (5, 3), (6, 3)]"
 Other Usernames:,[]
-Can view end,False
+Can view end,True
 Viewed Coins,"[(1, 1)]"
 Score,5
