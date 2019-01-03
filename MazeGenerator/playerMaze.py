@@ -14,13 +14,17 @@ class playerMaze():
 		self.currLoc = startLoc # in the form (row, col)
 		self.visited = [startLoc] # Stores visited locations
 
+		self.viewedCoins = []
+
 		sr, sc = startLoc
 		if sr <= 0 or sc <= 0:
 			self.canViewEnd = False
+			
 		else:
 			self.canViewEnd = self.checkViewEnd()
-	
-		self.viewedCoins = []
+			self.checkViewCoin()
+			
+		
 
 	def savePlayerMaze(self, fileName):
 		'''Will save the crucial data of the maze so that it can be loaded
@@ -58,7 +62,7 @@ class playerMaze():
 					self.viewedCoins = literal_eval(row[1])
 
 		mazeFilename = fileName[:len(fileName) - 4] + "_maze" + ".csv"
-		newmaze = Maze(0, 0)
+		newmaze = maze.Maze(0, 0)
 		newmaze.loadMaze(mazeFilename)
 
 		self.maze = newmaze
