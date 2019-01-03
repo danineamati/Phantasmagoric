@@ -68,6 +68,8 @@ class playerMaze():
 
 		self.maze = newmaze
 
+		self.checkViewCoin()
+
 	def getCurrentLocation(self):
 		'''Returns current location.'''
 		return self.currLoc
