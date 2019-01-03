@@ -177,7 +177,8 @@ def playExistingGame():
 						redo = input("Do you want to redo your turn? [y/n]: ")
 
 						if redo == "y":
-							pass
+							playMaze.loadPlayerMaze(filename)
+							playMaze.print()
 
 						else:
 							turn = False
