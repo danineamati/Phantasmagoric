@@ -90,12 +90,90 @@ def startNewGame():
 def playExistingGame():
 	'''Loads up an existing game.'''
 	print("Loading an Existing Game")
+	fileFound = False
+
+	# While loops that asks for user to input username and if the name matchs
+	# with a file that is in saveFiles, the desired maze is displayed
+	while fileFound == False:
+		username = input("What is your username: ")
+
+		if username.lower() == "q":
+			quit()
+
+		try:
+			playMaze = playerMaze()
+			filename = "saveFiles/" + username + ".csv"
+
+			playMaze.loadPlayerMaze(filename)
+
+			fileFound = True
+
+		except FileNotFoundError as e:
+			print("File {} not found. Please try again.".format(filename))
+
+	playMaze.print()
+
+	playTurn = input("Do you want to play your turn? [y/n]: ")
+	turnStartAsk = True
+
+	# While loops that asks if the player wants to play out their turn
+	while turnStartAsk:
+		if playTurn == "y":
+			break
+
+		elif playTurn == "n":
+			quit()
+
+		else: 
+			playTurn = input("That is not a valid option. " + \
+				"Do you want to play your turn? [y/n]: ")
+
+	# While loop that asks user for input to move their character this turn
+	# The loop then displays the updated maze if the move is valid
+	turn = True
+
+	while turn:
+
+		moveChoice = input("Where would you like to move? " +\
+			"[North/South/East/West/Cancel]: ")
+
+		if (moveChoice == "North" or moveChoice == "South" \
+			or moveChoice == "East" or moveChoice == "West") and \
+			playMaze.checkMove(moveChoice):
+
+				playMaze.moveLocation(moveChoice)
+				playMaze.print()
+
+				turnSave = ''
+				while turnSave not in ['y', 'n']:
+					turnSave = input("Do you want to save this turn? [y/n]: ")
+
+					if turnSave == "y":
+						playMaze.savePlayerMaze(filename)
+						turn = False
+
+					elif turnSave == "n":
+						redo = input("Do you want to redo your turn? [y/n]: ")
+
+						if redo == "y":
+							pass
+
+						else:
+							turn = False
+
+		elif moveChoice == "Cancel":
+			turn = False
+
+		else:
+			print("That is not a valid move.")
 
 def runGame():
 	'''Runs the game.'''
 	newGame = ''
 
 	while newGame.lower() not in ['y', 'n']:
+		print("Welcome to Phantasmagoric!")
+		print("")
 		newGame = input("Do you want to start a new game? [y/n]: ")
 
 		if newGame.lower() == 'y':
