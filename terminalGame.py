@@ -157,7 +157,9 @@ def playExistingGame():
 			"[North/South/East/West/Cancel]: ")
 
 		if (moveChoice == "North" or moveChoice == "South" \
-			or moveChoice == "East" or moveChoice == "West") and \
+			or moveChoice == "East" or moveChoice == "West" or \
+			moveChoice.lower() == "n" or moveChoice.lower() == "s" \
+			or moveChoice.lower() == "e" or moveChoice.lower() == "w") and \
 			playMaze.checkMove(moveChoice):
 
 				playMaze.moveLocation(moveChoice)
