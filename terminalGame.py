@@ -83,6 +83,9 @@ def startNewGame():
 	maze = fullgenMaze(numRows, numCols, numPlayers, threshold, coinPercent, \
 		False, False)
 
+	mazeName = input("Enter the name of the maze: ")
+	print("\nWelcome to {}".format(mazeName))
+
 	# In order to save the maze data, etc. The user needs to input the username
 	# of the players.
 	# In the current implementation, the user specifies all of the usernames.
@@ -91,7 +94,8 @@ def startNewGame():
 	for player in range(numPlayers):
 		player_username = input(\
 			"Please enter player {} username: ".format(player + 1))
-		filename = 'saveFiles/' + player_username + '.csv'
+		filename = 'saveFiles/' + 'maze_' + mazeName + '_' + \
+						player_username + '.csv'
 
 		playerObj = playerMaze(maze, maze.start[player])
 		playerObj.savePlayerMaze(filename)
@@ -114,6 +118,7 @@ def playExistingGame():
 	# While loops that asks for user to input username and if the name matchs
 	# with a file that is in saveFiles, the desired maze is displayed
 	while fileFound == False:
+		mazename = input("What is the name of the maze: ")
 		username = input("What is your username: ")
 
 		if username.lower() == "q":
@@ -121,7 +126,7 @@ def playExistingGame():
 
 		try:
 			playMaze = playerMaze()
-			filename = "saveFiles/" + username + ".csv"
+			filename = "saveFiles/maze_" + mazename + '_' + username + ".csv"
 
 			playMaze.loadPlayerMaze(filename)
 

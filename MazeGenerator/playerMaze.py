@@ -14,6 +14,8 @@ class playerMaze():
 		self.currLoc = startLoc # in the form (row, col)
 		self.visited = [startLoc] # Stores visited locations
 
+		self.otherPlayerUsernames = []
+
 		self.viewedCoins = []
 
 		sr, sc = startLoc
@@ -26,29 +28,31 @@ class playerMaze():
 			
 		
 
-	def savePlayerMaze(self, fileName):
+	def savePlayerMaze(self, playerFileName, saveThisMaze = True):
 		'''Will save the crucial data of the maze so that it can be loaded
 		after the program has ended.
 
 		Filename is assumed to be a csv file. '''
 
-		with open(fileName, 'w', newline = '') as saveFile:
+		with open(playerFileName, 'w', newline = '') as saveFile:
 			saveWriter = csv.writer(saveFile)
 			saveWriter.writerow(["Current Location", self.currLoc])
 			saveWriter.writerow(["Visited Locations", self.visited])
+			saveWriter.writerow(["Other Usernames:", self.otherPlayerUsernames])
 			saveWriter.writerow(["Can view end", self.canViewEnd])	
 			saveWriter.writerow(["Viewed Coins", self.viewedCoins])
 
 		# Now save the maze
-		mazeFilename = fileName[:len(fileName) - 4] + "_maze" + ".csv"
-		self.maze.saveMaze(mazeFilename)
+		if saveThisMaze:
+			mazeFilename = 'maze_' + playerFileName.split('_')[1] + '.csv'
+			self.maze.saveMaze(mazeFilename)
 
-	def loadPlayerMaze(self, fileName):
+	def loadPlayerMaze(self, playerFileName):
 		'''Loads back saved data to recreate a maze.
 
 		Filename is assumed to be a csv file.'''
 		
-		with open(fileName) as saveFile:
+		with open(playerFileName) as saveFile:
 			saveReader = csv.reader(saveFile)
 
 			for index, row in enumerate(saveReader):
@@ -57,17 +61,23 @@ class playerMaze():
 				elif index == 1:
 					self.visited = literal_eval(row[1])
 				elif index == 2:
-					self.canViewEnd = literal_eval(row[1])
+					self.otherPlayerUsernames = literal_eval(row[1])
 				elif index == 3:
+					self.canViewEnd = literal_eval(row[1])
+				elif index == 4:
 					self.viewedCoins = literal_eval(row[1])
 
-		mazeFilename = fileName[:len(fileName) - 4] + "_maze" + ".csv"
+		mazeFilename = 'maze_' + playerFileName.split('_')[1] + '.csv'
+
 		newmaze = maze.Maze(0, 0)
 		newmaze.loadMaze(mazeFilename)
 
 		self.maze = newmaze
-
 		self.checkViewCoin()
+
+	def setOtherUsernamer(self, Usernames):
+		'''Loads other player usernames so that the mazes update in unison. '''
+		self.otherPlayerUsernames = Usernames
 
 	def getCurrentLocation(self):
 		'''Returns current location.'''

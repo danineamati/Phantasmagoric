@@ -239,7 +239,7 @@ def test(numRows, numCols, numPlayers, threshold, verbose = False):
 	player1_Original = copy.deepcopy(p1)
 
 	# Now we check that we can save and load player data
-	filename_p1 = "../saveFiles/testP1SaveFile.csv"
+	filename_p1 = "../saveFiles/maze_testMaze_testP1SaveFile.csv"
 	p1.savePlayerMaze(filename_p1)
 	p1.loadPlayerMaze(filename_p1)
 
@@ -301,7 +301,7 @@ def test(numRows, numCols, numPlayers, threshold, verbose = False):
 								totalTests, passed)
 
 	# Now we test data recovery
-	filename_p1_old = "../saveFiles/testP1SaveFile_Old.csv"
+	filename_p1_old = "../saveFiles/maze_testMaze_testP1SaveFile_Old.csv"
 	player1_Old.savePlayerMaze(filename_p1_old)
 	p1_old = playerMaze.playerMaze()
 	p1_old.loadPlayerMaze(filename_p1_old)
@@ -333,7 +333,7 @@ def test(numRows, numCols, numPlayers, threshold, verbose = False):
 								totalTests, passed)
 
 	# Lastly, we test that the other player can save
-	filename_p2 = "../saveFiles/testP2SaveFile.csv"
+	filename_p2 = "../saveFiles/maze_testMaze_testP2SaveFile.csv"
 	p2.savePlayerMaze(filename_p2)
 	p2_new = playerMaze.playerMaze()
 	p2_new.loadPlayerMaze(filename_p2)
