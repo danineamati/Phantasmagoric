@@ -19,6 +19,8 @@ class playerMaze():
 		self.viewedCoins = []
 		self.score = 0
 
+		self.endSeen = False
+
 		sr, sc = startLoc
 		if sr <= 0 or sc <= 0:
 			self.canViewEnd = False
@@ -132,6 +134,7 @@ class playerMaze():
 				# if the adjacent cell is the current location
 				# AND there is not wall in the way,
 				if adjacent == self.currLoc:
+					self.endSeen = True
 					return True
 		# Otherwise, 
 		return False
@@ -218,7 +221,8 @@ class playerMaze():
 				elif (r, c) in self.visited:
 					current_row += print_cell(' - ', r, c)
 
-				elif self.canViewEnd and (r, c) == self.maze.end:
+				elif self.canViewEnd and (r, c) == self.maze.end\
+				    or self.endSeen == True:
 					current_row += print_cell(' E ', r, c)
 
 				else:
