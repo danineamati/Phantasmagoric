@@ -19,7 +19,7 @@ class playerMaze():
 		self.viewedCoins = []
 		self.score = 0
 
-		self.endSeen = False
+		self.viewedEnd = []
 
 		sr, sc = startLoc
 		if sr <= 0 or sc <= 0:
@@ -129,14 +129,18 @@ class playerMaze():
 			if not self.maze.hasWall(self.maze.end[0], \
 								self.maze.end[1], direction):
 
+				# check locations around the player
 				adjacent = self.maze.getNeighborCell(self.maze.end[0], \
 									self.maze.end[1], direction)
+
 				# if the adjacent cell is the current location
 				# AND there is not wall in the way,
-				if adjacent == self.currLoc:
-					self.endSeen = True
+				if adjacent == self.currLoc \
+				  and adjacent not in self.viewedEnd:	
+					self.viewedEnd.append(adjacent)
 					return True
-		# Otherwise, 
+
+		# Otherwise
 		return False
 
 	def checkViewCoin(self, verbose = False):
@@ -221,8 +225,8 @@ class playerMaze():
 				elif (r, c) in self.visited:
 					current_row += print_cell(' - ', r, c)
 
-				elif self.canViewEnd and (r, c) == self.maze.end\
-				    or self.endSeen == True:
+				elif (r, c) in self.viewedEnd and self.canViewEnd \
+				    and (r, c) == self.maze.end:
 					current_row += print_cell(' E ', r, c)
 
 				else:
