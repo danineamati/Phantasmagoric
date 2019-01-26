@@ -19,8 +19,6 @@ class playerMaze():
 		self.viewedCoins = []
 		self.score = 0
 
-		self.viewedEnd = []
-
 		sr, sc = startLoc
 		if sr <= 0 or sc <= 0:
 			self.canViewEnd = False
@@ -42,7 +40,7 @@ class playerMaze():
 			saveWriter.writerow(["Current Location", self.currLoc])
 			saveWriter.writerow(["Visited Locations", self.visited])
 			saveWriter.writerow(["Other Usernames:", self.otherPlayerUsernames])
-			saveWriter.writerow(["Can view end", self.canViewEnd])	
+			saveWriter.writerow(["Can view end", int(self.canViewEnd)])	
 			saveWriter.writerow(["Viewed Coins", self.viewedCoins])
 			saveWriter.writerow(["Score", self.score])
 
@@ -68,7 +66,12 @@ class playerMaze():
 				elif index == 2:
 					self.otherPlayerUsernames = literal_eval(row[1])
 				elif index == 3:
-					self.canViewEnd = literal_eval(row[1])
+					try:
+						self.canViewEnd = bool(literal_eval(row[1]))
+					except ValueError as e:
+						print(e)
+						self.canViewEnd = True
+					
 				elif index == 4:
 					self.viewedCoins = literal_eval(row[1])
 				elif index == 5:
@@ -97,7 +100,8 @@ class playerMaze():
 		locations.'''
 		self.visited.append(loc)
 		self.currLoc = loc
-		self.canViewEnd = self.checkViewEnd()
+		if self.canViewEnd == False:
+			self.canViewEnd = self.checkViewEnd()
 		self.checkViewCoin(False)
 
 		if (loc[0], loc[1]) in self.maze.coin:
@@ -137,7 +141,6 @@ class playerMaze():
 				# AND there is not wall in the way,
 				if adjacent == self.currLoc \
 				  and adjacent not in self.viewedEnd:	
-					self.viewedEnd.append(adjacent)
 					return True
 
 		# Otherwise
@@ -219,15 +222,14 @@ class playerMaze():
 				if (r, c) == self.getCurrentLocation():
 					current_row += print_cell(' P ', r, c)
 
+				elif self.canViewEnd and (r, c) == self.maze.end:
+					current_row += print_cell(' E ', r, c)
+
 				elif (r, c) in self.viewedCoins:
 					current_row += print_cell(' C ', r, c)
 
 				elif (r, c) in self.visited:
 					current_row += print_cell(' - ', r, c)
-
-				elif (r, c) in self.viewedEnd and self.canViewEnd \
-				    and (r, c) == self.maze.end:
-					current_row += print_cell(' E ', r, c)
 
 				else:
 					current_row += print_cell('   ', r, c)
