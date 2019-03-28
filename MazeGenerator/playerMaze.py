@@ -89,7 +89,7 @@ class playerMaze():
 
 	def setOtherUsername(self, Usernames):
 		'''Loads other player usernames so that the mazes update in unison. '''
-		self.otherPlayerUsernames = Usernames
+		self.otherPlayerUsernames.append(Usernames)
 
 	def getCurrentLocation(self):
 		'''Returns current location.'''

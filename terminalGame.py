@@ -27,8 +27,8 @@ def startNewGame():
 			print("Try Again")
 
 	if size.lower() == sizeList[0]:
-		numRows = 8
-		numCols = 8
+		numRows = 4
+		numCols = 4
 	elif size.lower() == sizeList[1]:
 		numRows = 12
 		numCols = 18
@@ -103,6 +103,7 @@ def startNewGame():
 	for player in allplayers:
 		obj, user = player
 		for other_player in allplayers:
+			
 			other_obj, other_user = other_player
 
 			if user != other_user:
@@ -110,7 +111,7 @@ def startNewGame():
 
 		filename = 'saveFiles/' + 'maze_' + mazeName + '_' + \
 						user + '.csv'
-		playerObj.savePlayerMaze(filename)
+		obj.savePlayerMaze(filename)
 
 
 	# The map has been generated and the game is ready!
@@ -121,19 +122,57 @@ def startNewGame():
 	if playGame == 'y':
 		playExistingGame(False)
 
-def endgame(player, maze):
+def endgame(player, username, other_player_usernames, mazename):
 	'''This is the end screen when a player has moved to the END tile. '''
-	if player.currLoc == maze.end:
-		maze.print(False)
-		print('''
-#################################
-        Congratulations!!!!
-        Score: {}
-#################################
-			'''.format(player.score))
-		return True
-	else:
+
+	players = [(player, username, (player.currLoc == player.maze.end))]
+
+	gameEnd = (player.currLoc == player.maze.end)
+
+	for other_username in other_player_usernames:
+		try:
+			playMaze = playerMaze()
+			filename = "saveFiles/maze_" + mazename + '_' + \
+									other_username + ".csv"
+			playMaze.loadPlayerMaze(filename)
+
+			onEnd = playMaze.currLoc == playMaze.maze.end
+
+			if onEnd:
+				gameEnd = True
+
+			players.append((playMaze, other_username, onEnd))
+
+		except FileNotFoundError as e:
+			print("File {} not found. Please try again.".format(filename))
+
+	if not gameEnd:
 		return False
+	else:
+		bar = "#" * 40
+		print("\n\n" + bar)
+		if players[0][2]:
+			cong1 = "Congratulations!"
+			cong2 = "You escaped the maze!"
+
+			# We want to center this
+			print(" " * ((len(bar) - len(cong1)) // 2) + cong1)
+			print(" " * ((len(bar) - len(cong2)) // 2) + cong2 + "\n")
+		else:
+			for plyr in players:
+				if plyr[2]:
+					print("Player {} escaped the maze".format(plyr[1]))
+					break
+
+		print("  Scores:")
+		for plyr in players:
+			print("  Player {} : {}".format(plyr[1], plyr[0].score))
+
+		print("########################################\n\n")
+
+		return True
+
+		
 
 
 def playExistingGame(sysValid = True):
@@ -165,6 +204,10 @@ def playExistingGame(sysValid = True):
 		except FileNotFoundError as e:
 			print("File {} not found. Please try again.".format(filename))
 			sysValid = False
+
+	# We want to check if any player has seen the end.
+	if endgame(playMaze, username, playMaze.otherPlayerUsernames, mazename):
+		return
 
 	playMaze.print()
 
@@ -203,7 +246,12 @@ def playExistingGame(sysValid = True):
 
 				playMaze.moveLocation(moveChoice)
 
-				if not endgame(playMaze, playMaze.maze):
+				gameEnd = endgame(playMaze, username,
+									playMaze.otherPlayerUsernames, mazename)
+
+				print(gameEnd)
+
+				if not gameEnd:
 					playMaze.print()
 
 					turnSave = ''
