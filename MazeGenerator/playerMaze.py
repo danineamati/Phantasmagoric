@@ -133,14 +133,12 @@ class playerMaze():
 			if not self.maze.hasWall(self.maze.end[0], \
 								self.maze.end[1], direction):
 
-				# check locations around the player
+				# check locations around the end
 				adjacent = self.maze.getNeighborCell(self.maze.end[0], \
 									self.maze.end[1], direction)
 
-				# if the adjacent cell is the current location
-				# AND there is not wall in the way,
-				if adjacent == self.currLoc \
-				  and adjacent not in self.viewedEnd:	
+				# if the adjacent cell (to the end) is the current location,
+				if adjacent == self.currLoc:	
 					return True
 
 		# Otherwise
