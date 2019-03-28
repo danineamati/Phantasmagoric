@@ -244,7 +244,7 @@ class playerMaze():
 						current_floor += '---+'
 					elif r < self.maze.numColumns and \
 										(r + 1, c) in self.visited and \
-										self.maze.hasWall(r + 1, c, "North")	:
+										self.maze.hasWall(r + 1, c, "North"):
 						current_floor += '---+'
 					else:
 						current_floor += '   +'
