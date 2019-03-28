@@ -109,6 +109,20 @@ def startNewGame():
 	if playGame == 'y':
 		playExistingGame(False)
 
+def endgame(player, maze):
+	'''This is the end screen when a player has moved to the END tile. '''
+	if player.currLoc == maze.end:
+		maze.print(False)
+		print('''
+#################################
+        Congratulations!!!!
+        Score: {}
+#################################
+			'''.format(player.score))
+		return True
+	else:
+		return False
+
 
 def playExistingGame(sysValid = True):
 	'''Loads up an existing game.'''
@@ -176,26 +190,34 @@ def playExistingGame(sysValid = True):
 			playMaze.checkMove(moveChoice):
 
 				playMaze.moveLocation(moveChoice)
-				playMaze.print()
 
-				turnSave = ''
-				while turnSave not in ['y', 'n']:
-					turnSave = input("Do you want to save this turn? [y/n]: ")
+				if not endgame(playMaze, playMaze.maze):
+					playMaze.print()
 
-					if turnSave == "y":
-						print("Current score: " + str(playMaze.score))
-						playMaze.savePlayerMaze(filename)
-						turn = False
+					turnSave = ''
+					while turnSave not in ['y', 'n']:
+						turnSave = input(
+							"Do you want to save this turn? [y/n]: ")
 
-					elif turnSave == "n":
-						redo = input("Do you want to redo your turn? [y/n]: ")
-
-						if redo == "y":
-							playMaze.loadPlayerMaze(filename)
-							playMaze.print()
-
-						else:
+						if turnSave == "y":
+							print("Current score: " + str(playMaze.score))
+							playMaze.savePlayerMaze(filename)
 							turn = False
+
+						elif turnSave == "n":
+							redo = input(
+								"Do you want to redo your turn? [y/n]: ")
+
+							if redo == "y":
+								playMaze.loadPlayerMaze(filename)
+								playMaze.print()
+
+							else:
+								turn = False
+				else:
+					print("Current score: " + str(playMaze.score))
+					playMaze.savePlayerMaze(filename)
+					turn = False
 
 		elif moveChoice == "Cancel":
 			turn = False

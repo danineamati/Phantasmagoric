@@ -115,9 +115,13 @@ class playerMaze():
 
 		The Direction list is specified in maze.py'''
 		current_row, current_col = self.currLoc
+
+		# Quick Assert to check move validity
 		assert(not self.maze.hasWall(current_row, current_col, direction))
 		new_row, new_col = self.maze.getNeighborCell(\
 			current_row, current_col, direction)
+
+		# Add the new location to maze and check if the game has ended.
 		self.addNewLocation((new_row, new_col))
 
 	def checkMove(self, direction):
