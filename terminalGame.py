@@ -161,7 +161,9 @@ def endgame(player, username, other_player_usernames, mazename):
 		else:
 			for plyr in players:
 				if plyr[2]:
-					print("Player {} escaped the maze".format(plyr[1]))
+					escp = "Player {} escaped the maze".format(plyr[1])
+					# We want to center this
+					print(" " * ((len(bar) - len(escp)) // 2) + escp + "\n")
 					break
 
 		print("  Scores:")
