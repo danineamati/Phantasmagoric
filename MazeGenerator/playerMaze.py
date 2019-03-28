@@ -87,7 +87,7 @@ class playerMaze():
 		self.maze = newmaze
 		self.checkViewCoin()
 
-	def setOtherUsernamer(self, Usernames):
+	def setOtherUsername(self, Usernames):
 		'''Loads other player usernames so that the mazes update in unison. '''
 		self.otherPlayerUsernames = Usernames
 

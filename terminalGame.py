@@ -91,13 +91,25 @@ def startNewGame():
 	# In the current implementation, the user specifies all of the usernames.
 	print("\nTime to create characters")
 
+	allplayers = []
+
 	for player in range(numPlayers):
 		player_username = input(\
 			"Please enter player {} username: ".format(player + 1))
-		filename = 'saveFiles/' + 'maze_' + mazeName + '_' + \
-						player_username + '.csv'
 
 		playerObj = playerMaze(maze, maze.start[player])
+		allplayers.append((playerObj, player_username))
+
+	for player in allplayers:
+		obj, user = player
+		for other_player in allplayers:
+			other_obj, other_user = other_player
+
+			if user != other_user:
+				obj.setOtherUsername(other_user)
+
+		filename = 'saveFiles/' + 'maze_' + mazeName + '_' + \
+						user + '.csv'
 		playerObj.savePlayerMaze(filename)
 
 
