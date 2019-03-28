@@ -149,6 +149,10 @@ def endgame(player, username, other_player_usernames, mazename):
 	if not gameEnd:
 		return False
 	else:
+		# Prints the maze
+		player.maze.print(False)
+
+		# Prints end message
 		bar = "#" * 40
 		print("\n\n" + bar)
 		if players[0][2]:
